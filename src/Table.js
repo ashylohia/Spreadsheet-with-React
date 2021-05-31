@@ -1,16 +1,36 @@
 import { Table } from 'reactstrap'
-import useState from 'react'
+import { useState, useEffect } from 'react'
 
 const MainTable = (props) => {
-    const row = [];
-    for (let i = 65; i < 65 + props.x; i++) {
-        let char = String.fromCharCode(i);
-        row.push(char);
+    const [row, setRow] = useState([])
+    const [col, setCol] = useState([])
+    const [cellData, setCellData] = useState({})
+
+    useEffect(() => {
+        let _row = [];
+        let _col = [];
+        
+        for (let i = 65; i < 65 + props.x; i++) {
+            let char = String.fromCharCode(i);
+            _row.push(char);
+        }
+
+        for (let i = 1; i < props.y + 1; i++) {
+            _col.push(i)
+        }
+
+        setRow(_row)
+        setCol(_col)
+
+    }, [])
+
+    const onChangeHandler = (id, e) => {
+        setCellData({
+            ...cellData,
+            [id]: e.target.value
+        })
     }
-    const col = [];
-    for (let i = 1; i < props.y + 1; i++) {
-        col.push(i);
-    }
+
 
     // For holding cell value
     // const [cellData, updateCellData] = useState();
@@ -35,7 +55,14 @@ const MainTable = (props) => {
                         {
 
                             col.map((th, id) => (
-                                <th key={id}><input className="cell" id={row[id] + "" + column} type="text" /></th>
+                                <th key={id}>
+                                    <input
+                                        className="cell"
+                                        id={row[id] + "" + column}
+                                        type="text"
+                                        onChange={e => onChangeHandler((row[id] + "" + column), e)}
+                                    />
+                                </th>
                             ))
                         }
                     </tr>
